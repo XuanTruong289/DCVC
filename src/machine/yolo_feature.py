@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 
 # Thêm module ycbcr2rgb từ thư mục utils của DCVC-RT
-from src.utils.stream_helper import ycbcr2rgb
+from src.utils.transforms import ycbcr2rgb
 
 
 def dcvc_to_yolo_rgb(x_dcvc: torch.Tensor) -> torch.Tensor:
@@ -56,7 +56,11 @@ def build_yolov5_frontends(
         sys.path.insert(0, str(yolov5_path))
 
     # Load weights bằng hàm torch.load từ ultralytics
-    checkpoint = torch.load(weights_path, map_location=device)
+    checkpoint = torch.load(
+    	weights_path,
+    	map_location=device,
+    	weights_only=False,
+    )
     full_model = checkpoint.get("model", checkpoint)
     if hasattr(full_model, "float"):
         full_model = full_model.float()
